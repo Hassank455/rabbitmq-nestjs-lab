@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Lab03 Flow">
+    <mxGraphModel grid="1" gridSize="10" page="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="Lab 03 — Fanout: one event, a copy for every bound queue" style="text;html=1;fontSize=22;fontStyle=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1000" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pub" value="&lt;b&gt;Lab03Controller&lt;/b&gt;&lt;br&gt;POST /lab03/orders&lt;br&gt;assertExchange()&lt;br&gt;publish(exchange, '', buf)&lt;br&gt;&lt;i&gt;knows ONLY the exchange&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="20" y="350" width="220" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="broker" value="RabbitMQ broker" style="swimlane;startSize=30;html=1;whiteSpace=wrap;rounded=1;arcSize=3;fontStyle=1;fontSize=14;fillColor=#ffe6cc;strokeColor=#d79b00;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="300" y="80" width="560" height="640" as="geometry" />
+        </mxCell>
+        <mxCell id="bnote" value="Each arrow on the right is one &lt;b&gt;BINDING&lt;/b&gt;.&lt;br&gt;At publish time the exchange drops one copy into every bound queue.&lt;br&gt;The exchange itself stores nothing." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;fontColor=#666666;" vertex="1" parent="broker">
+          <mxGeometry x="20" y="70" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="ex" value="&lt;b&gt;lab03.orders.fanout&lt;/b&gt;&lt;br&gt;type: fanout&lt;br&gt;keys are ignored" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="broker">
+          <mxGeometry x="30" y="280" width="170" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="qe" value="&lt;b&gt;lab03.email&lt;/b&gt;&lt;br&gt;named · durable: false" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="broker">
+          <mxGeometry x="320" y="70" width="210" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qs" value="&lt;b&gt;lab03.sms&lt;/b&gt;&lt;br&gt;named · durable: false" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="broker">
+          <mxGeometry x="320" y="200" width="210" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qa" value="&lt;b&gt;lab03.analytics&lt;/b&gt;&lt;br&gt;named · durable: false" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="broker">
+          <mxGeometry x="320" y="330" width="210" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ql" value="&lt;b&gt;amq.gen-XXXX&lt;/b&gt;&lt;br&gt;server-named · exclusive&lt;br&gt;deleted on disconnect" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;dashed=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="broker">
+          <mxGeometry x="320" y="480" width="210" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="svcs" value="Services (NestJS processes)" style="swimlane;startSize=30;html=1;whiteSpace=wrap;rounded=1;arcSize=3;fontStyle=1;fontSize=14;fillColor=#dae8fc;strokeColor=#6c8ebf;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="920" y="80" width="320" height="640" as="geometry" />
+        </mxCell>
+        <mxCell id="eA" value="&lt;b&gt;email&lt;/b&gt; · process A" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="svcs">
+          <mxGeometry x="40" y="40" width="220" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="eB" value="&lt;b&gt;email&lt;/b&gt; · process B" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="svcs">
+          <mxGeometry x="40" y="110" width="220" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="cap" value="A and B COMPETE (share email.queue)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=11;fontStyle=2;" vertex="1" parent="svcs">
+          <mxGeometry x="40" y="163" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="sA" value="&lt;b&gt;sms&lt;/b&gt; · process A" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="svcs">
+          <mxGeometry x="40" y="205" width="220" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="aA" value="&lt;b&gt;analytics&lt;/b&gt; · process A" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="svcs">
+          <mxGeometry x="40" y="335" width="220" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="dash" value="&lt;b&gt;DASH&lt;/b&gt; · LIVE=on&lt;br&gt;noAck: true" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="svcs">
+          <mxGeometry x="40" y="490" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="takeaway" value="&lt;b&gt;Publisher:&lt;/b&gt; assertExchange → publish.     &lt;b&gt;Each service:&lt;/b&gt; assertExchange → assertQueue → bindQueue → consume.&lt;br&gt;A new service = a new queue + a new binding. The publisher does not change at all." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="20" y="750" width="1220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="p1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="pub" target="ex">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" x="0" y="-16" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="b1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d79b00;strokeWidth=2;exitX=1;exitY=0.2;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ex" target="qe">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="540" y="378" />
+              <mxPoint x="540" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="b2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d79b00;strokeWidth=2;exitX=1;exitY=0.4;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ex" target="qs">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="560" y="396" />
+              <mxPoint x="560" y="310" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="b3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d79b00;strokeWidth=2;exitX=1;exitY=0.6;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ex" target="qa">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="580" y="414" />
+              <mxPoint x="580" y="440" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="b4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d79b00;strokeWidth=2;dashed=1;exitX=1;exitY=0.8;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ex" target="ql">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="520" y="432" />
+              <mxPoint x="520" y="595" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="qe" target="eA">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="qe" target="eB">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="qs" target="sA">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="qa" target="aA">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.4167;entryDx=0;entryDy=0;" edge="1" parent="1" source="ql" target="dash">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

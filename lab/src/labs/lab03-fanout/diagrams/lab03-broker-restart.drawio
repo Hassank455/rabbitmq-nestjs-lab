@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Lab03 Broker Restart">
+    <mxGraphModel grid="1" gridSize="10" page="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="Lab 03 — What happens on docker restart rabbitmq (Question 4)" style="text;html=1;fontSize=22;fontStyle=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="1100" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="h1" value="1 · Before" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1;fillColor=#333333;strokeColor=#333333;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="260" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="h2" value="2 · docker restart rabbitmq" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1;fillColor=#333333;strokeColor=#333333;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="340" y="80" width="260" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="h3" value="3 · Broker is back up" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1;fillColor=#333333;strokeColor=#333333;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="640" y="80" width="260" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="h4" value="4 · Restart the app (only fix today)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1;fillColor=#333333;strokeColor=#333333;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="940" y="80" width="260" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b1" value="&lt;b&gt;BROKER&lt;/b&gt;&lt;br&gt;exchange lab03.orders.fanout&lt;br&gt;queues lab03.email / sms / analytics&lt;br&gt;amq.gen-… (exclusive)&lt;br&gt;messages waiting in queues" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="40" y="160" width="260" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="b2" value="&lt;b&gt;BROKER&lt;/b&gt;&lt;br&gt;shuts down and force-closes every client connection&lt;br&gt;&lt;br&gt;everything non-durable is DELETED:&lt;br&gt;exchange, queues, messages" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="340" y="160" width="260" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="b3" value="&lt;b&gt;BROKER&lt;/b&gt;&lt;br&gt;up again, but EMPTY&lt;br&gt;no lab03 exchange&lt;br&gt;no lab03 queues" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="640" y="160" width="260" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="b4" value="&lt;b&gt;BROKER&lt;/b&gt;&lt;br&gt;topology re-created by our code at startup:&lt;br&gt;assertExchange · assertQueue · bindQueue" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="940" y="160" width="260" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a1" value="&lt;b&gt;APP&lt;/b&gt;&lt;br&gt;1 connection · N channels&lt;br&gt;consumers running&lt;br&gt;POST /lab03/orders → 201" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="40" y="350" width="260" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" value="&lt;b&gt;APP&lt;/b&gt;&lt;br&gt;logs: Connection error&lt;br&gt;Connection closed · Channel closed&lt;br&gt;&lt;br&gt;the process is STILL RUNNING&lt;br&gt;the HTTP server still answers" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="340" y="350" width="260" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" value="&lt;b&gt;APP = ZOMBIE&lt;/b&gt;&lt;br&gt;nobody reconnects&lt;br&gt;consumers are dead for good&lt;br&gt;&lt;br&gt;POST /lab03/orders → 500&lt;br&gt;(Channel closed)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="640" y="350" width="260" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="a4" value="&lt;b&gt;APP&lt;/b&gt;&lt;br&gt;new connection + channels&lt;br&gt;consumers running again&lt;br&gt;&lt;br&gt;messages lost in step 2&lt;br&gt;are NOT coming back" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="940" y="350" width="260" height="190" as="geometry" />
+        </mxCell>
+
+        <mxCell id="p1" value="&lt;b&gt;Problem 1 · the broker lost data&lt;/b&gt;&lt;br&gt;durable: true exchange + queues, persistent: true messages&lt;br&gt;→ Lab 06" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="580" width="560" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="p2" value="&lt;b&gt;Problem 2 · the app does not recover by itself&lt;/b&gt;&lt;br&gt;reconnect with backoff → new channels → re-declare topology → re-consume&lt;br&gt;→ added to RabbitMQService later (or use amqp-connection-manager)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="640" y="580" width="560" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="t1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="h1" target="h2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="t2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="h2" target="h3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="t3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="h3" target="h4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

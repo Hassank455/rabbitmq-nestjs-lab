@@ -53,3 +53,10 @@ Exchange = photocopier with a distribution list (the bindings)
 Binding  = your name on that list
 Queue    = your personal mailbox
 ```
+
+## Diagrams
+![Flow](diagrams/lab03-flow.drawio.png)
+![Lost vs wait](diagrams/lab03-lost-vs-wait.drawio.png)
+![Broker restart](diagrams/lab03-broker-restart.drawio.png)
+![Dashboards: named vs exclusive](diagrams/lab03-dash-named-vs-exclusive.drawio.png)
+

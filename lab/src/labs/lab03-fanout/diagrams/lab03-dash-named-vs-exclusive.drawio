@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Lab03 Dashboard: named vs exclusive">
+    <mxGraphModel grid="1" gridSize="10" page="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="Lab 03 — Two live dashboards: named queue vs exclusive queues" style="text;html=1;fontSize=22;fontStyle=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="1100" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Left: named queue -->
+        <mxCell id="pL" value="WRONG · one named queue → the dashboards SHARE the orders" style="swimlane;startSize=30;html=1;whiteSpace=wrap;rounded=1;arcSize=3;fontStyle=1;fontSize=14;fillColor=#f8cecc;strokeColor=#b85450;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="560" height="520" as="geometry" />
+        </mxCell>
+        <mxCell id="lPub" value="&lt;b&gt;Publisher&lt;/b&gt;&lt;br&gt;orders #1 – #6" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="pL">
+          <mxGeometry x="190" y="50" width="180" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="lEx" value="&lt;b&gt;fanout exchange&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="pL">
+          <mxGeometry x="170" y="140" width="220" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="lQ" value="&lt;b&gt;lab03.dashboard&lt;/b&gt;&lt;br&gt;ONE named queue" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="pL">
+          <mxGeometry x="130" y="240" width="300" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="lA" value="&lt;b&gt;Ahmad's dashboard&lt;/b&gt;&lt;br&gt;sees #1, #3, #5" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="pL">
+          <mxGeometry x="30" y="370" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="lS" value="&lt;b&gt;Sara's dashboard&lt;/b&gt;&lt;br&gt;sees #2, #4, #6" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="pL">
+          <mxGeometry x="310" y="370" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="lNote" value="Each one sees only HALF.&lt;br&gt;While both are closed, orders keep piling up in the queue." style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=13;fontColor=#b85450;fontStyle=1;" vertex="1" parent="pL">
+          <mxGeometry x="20" y="450" width="520" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Right: exclusive queues -->
+        <mxCell id="pR" value="RIGHT · one exclusive queue per dashboard → each sees ALL" style="swimlane;startSize=30;html=1;whiteSpace=wrap;rounded=1;arcSize=3;fontStyle=1;fontSize=14;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="640" y="80" width="560" height="520" as="geometry" />
+        </mxCell>
+        <mxCell id="rPub" value="&lt;b&gt;Publisher&lt;/b&gt;&lt;br&gt;orders #1 – #6" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="pR">
+          <mxGeometry x="190" y="50" width="180" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="rEx" value="&lt;b&gt;fanout exchange&lt;/b&gt;&lt;br&gt;makes a copy per binding" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="pR">
+          <mxGeometry x="170" y="140" width="220" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="rQA" value="&lt;b&gt;amq.gen-AbC&lt;/b&gt;&lt;br&gt;exclusive · Ahmad's connection" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;dashed=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="pR">
+          <mxGeometry x="30" y="240" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="rQS" value="&lt;b&gt;amq.gen-XyZ&lt;/b&gt;&lt;br&gt;exclusive · Sara's connection" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;dashed=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="pR">
+          <mxGeometry x="310" y="240" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="rA" value="&lt;b&gt;Ahmad's dashboard&lt;/b&gt;&lt;br&gt;sees #1 – #6" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="pR">
+          <mxGeometry x="30" y="370" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="rS" value="&lt;b&gt;Sara's dashboard&lt;/b&gt;&lt;br&gt;sees #1 – #6" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="pR">
+          <mxGeometry x="310" y="370" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="rNote" value="Each one sees EVERYTHING.&lt;br&gt;Dashboard closed → queue + binding deleted → nothing piles up." style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=13;fontColor=#2d6a2d;fontStyle=1;" vertex="1" parent="pR">
+          <mxGeometry x="20" y="450" width="520" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Lifecycle strip -->
+        <mxCell id="life" value="Lifecycle of ONE exclusive queue" style="swimlane;startSize=30;html=1;whiteSpace=wrap;rounded=1;arcSize=3;fontStyle=1;fontSize=14;fillColor=#dae8fc;strokeColor=#6c8ebf;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="40" y="630" width="1160" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="s1" value="&lt;b&gt;1 · connect&lt;/b&gt;&lt;br&gt;assertQueue('', { exclusive: true })&lt;br&gt;→ broker names it amq.gen-AbC" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="life">
+          <mxGeometry x="20" y="50" width="250" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s2" value="&lt;b&gt;2 · bindQueue + consume&lt;/b&gt;&lt;br&gt;sees new orders live&lt;br&gt;other connections: RESOURCE_LOCKED" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="life">
+          <mxGeometry x="310" y="50" width="250" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s3" value="&lt;b&gt;3 · connection closes&lt;/b&gt;&lt;br&gt;Ctrl+C · crash · kill -9 · network lost" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="life">
+          <mxGeometry x="600" y="50" width="250" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s4" value="&lt;b&gt;4 · broker cleans up&lt;/b&gt;&lt;br&gt;deletes the queue AND its binding&lt;br&gt;next start → a NEW name" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="life">
+          <mxGeometry x="890" y="50" width="250" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="decide" value="Ask: &lt;i&gt;if I run 3 copies of this service, should each event run ONCE or 3 TIMES?&lt;/i&gt;&lt;br&gt;&lt;b&gt;ONCE&lt;/b&gt; (email, payment, sms) → one shared named queue        ·        &lt;b&gt;3 TIMES&lt;/b&gt; (dashboard, cache invalidation, websocket push) → one exclusive queue per copy" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="810" width="1160" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Edges left -->
+        <mxCell id="le1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="lPub" target="lEx">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="le2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d79b00;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="lEx" target="lQ">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="le3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="lQ" target="lA">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="le4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="lQ" target="lS">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Edges right -->
+        <mxCell id="re1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="rPub" target="rEx">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="re2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d79b00;strokeWidth=2;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="rEx" target="rQA">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="re3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d79b00;strokeWidth=2;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="rEx" target="rQS">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="re4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="rQA" target="rA">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="re5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="rQS" target="rS">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Lifecycle edges -->
+        <mxCell id="se1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s1" target="s2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="se2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s2" target="s3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="se3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s3" target="s4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

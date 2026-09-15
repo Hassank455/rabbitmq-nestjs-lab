@@ -1,0 +1,174 @@
+# RabbitMQ × NestJS Lab
+
+Learning RabbitMQ by **building it**, one lab at a time.
+
+Every lab is a small NestJS module with a publisher, one or more consumers, and a set of experiments you run while watching the RabbitMQ management UI. The goal is not to read about RabbitMQ, but to see each concept prove itself.
+
+![NestJS](https://img.shields.io/badge/NestJS-E0234E?logo=nestjs&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![RabbitMQ](https://img.shields.io/badge/RabbitMQ-FF6600?logo=rabbitmq&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
+
+---
+
+## Progress
+
+| #  | Lab | What it teaches | Status |
+|----|-----|-----------------|--------|
+| 01 | [Hello Queue](lab/src/labs/lab01-hello-queue/README.md) | Default exchange · connection vs channel · manual ack | ✅ Done |
+| 02 | [Work Queue](lab/src/labs/lab02-work-queue/README.md) | Competing consumers · prefetch · redelivery | ✅ Done |
+| 03 | [Fanout Exchange](lab/src/labs/lab03-fanout/README.md) | Bindings · copy per service · exclusive queues | ✅ Done |
+| 04 | Direct Exchange | Routing keys · multiple bindings | 🔜 Next |
+| 05 | Topic Exchange | Wildcards `*` and `#` | ⬜ Planned |
+| 06 | Durability & Reconnect | Durable queues · persistent messages · connection recovery | ⬜ Planned |
+| 07 | Ack / Nack / Reject | Requeue · poison messages · infinite loops | ⬜ Planned |
+| 08 | Dead Letter Exchange | DLX · DLQ · the `x-death` header | ⬜ Planned |
+| 09 | Retry with TTL | Delayed retries · retry tiers · head-of-queue TTL trap | ⬜ Planned |
+| 10 | Unroutable Messages | `mandatory` · returns · alternate exchange | ⬜ Planned |
+| 11 | Publisher Confirms | Proving the broker really received a message | ⬜ Planned |
+| 12 | Idempotent Consumer | Surviving at-least-once duplicates | ⬜ Planned |
+| 13 | Capstone | An order system using everything above | ⬜ Planned |
+
+---
+
+## Quick start
+
+**1. Start RabbitMQ**
+
+```bash
+docker run -d --hostname rabbitmq --name rabbitmq \
+  -p 5672:5672 -p 15672:15672 \
+  rabbitmq:3-management
+```
+
+Management UI: <http://localhost:15672> (user `guest`, password `guest`)
+
+**2. Run the app**
+
+```bash
+cd lab
+npm install
+CONSUMERS=on npm run start:dev
+```
+
+**3. Publish something**
+
+```bash
+curl -X POST http://localhost:3000/lab01/publish \
+  -H 'Content-Type: application/json' -d '{"userId": 10}'
+```
+
+---
+
+## Endpoints
+
+| Lab | Method | Path | Body |
+|-----|--------|------|------|
+| 01 | `POST` | `/lab01/publish` | `{ "userId": 10, "message": "..." }` |
+| 02 | `POST` | `/lab02/publish` | `{ "count": 20, "durationMs": 500 }` |
+| 03 | `POST` | `/lab03/orders`  | `{ "count": 6 }` |
+
+## Environment variables
+
+The same app is started several times with different settings to simulate separate services and workers.
+
+| Variable | Default | Used in | Meaning |
+|----------|---------|---------|---------|
+| `RABBITMQ_URL` | `amqp://guest:guest@localhost:5672` | all | Broker connection string |
+| `PORT` | `3000` | all | HTTP port (change it to run several instances) |
+| `CONSUMERS` | off | all | `on` starts the consumers |
+| `WORKER_NAME` | `worker` | 02 · 03 | Label shown in logs |
+| `WORKER_DELAY` | `1000` | 02 | Simulated work time in ms |
+| `PREFETCH` | `0` | 02 | Max unacked messages per consumer (`0` = unlimited) |
+| `SERVICES` | all | 03 | `email,sms,analytics` subset, or `none` |
+| `LIVE` | off | 03 | `on` starts a live dashboard on an exclusive queue |
+
+Example: two competing workers with different speeds.
+
+```bash
+CONSUMERS=on WORKER_NAME=FAST WORKER_DELAY=100  PREFETCH=1 PORT=3000 npm run start
+CONSUMERS=on WORKER_NAME=SLOW WORKER_DELAY=3000 PREFETCH=1 PORT=3001 npm run start
+```
+
+---
+
+## Project structure
+
+```text
+.
+├── docs/                         Theory notes, one file per topic
+│   └── images/
+└── lab/                          NestJS app
+    └── src/
+        ├── main.ts
+        ├── app.module.ts
+        ├── rabbitmq/             Shared infrastructure: one connection, channels on demand
+        │   ├── rabbitmq.module.ts
+        │   └── rabbitmq.service.ts
+        └── labs/
+            ├── lab01-hello-queue/
+            ├── lab02-work-queue/
+            └── lab03-fanout/
+```
+
+Every lab folder follows the same layout:
+
+| File | Role |
+|------|------|
+| `labXX.constants.ts` | Exchange / queue names and message types |
+| `labXX.controller.ts` | The **publisher**, exposed as an HTTP endpoint |
+| `labXX.consumer.ts` | The **consumers** |
+| `labXX.module.ts` | Wires them together |
+| `README.md` | Goal, how to run, key takeaways, gotchas |
+| `diagrams/` | draw.io sources + PNG exports (open the `.drawio.png` in draw.io to edit) |
+
+---
+
+## Key ideas so far
+
+- **The HTTP request never reaches the consumer.** It ends at the controller. What reaches the consumer is a message owned by the broker.
+- **One connection per process, one channel per consumer.** Connections are expensive TCP sockets; channels are cheap.
+- **In Node.js, `prefetch` is your concurrency limit.** amqplib never awaits the consume callback.
+- **A queue shares. An exchange copies.** Many consumers on one queue split the work; every bound queue gets its own copy.
+- **An exchange stores nothing.** No queue bound at publish time means the message is gone.
+
+## Selected diagrams
+
+**Lab 01 — the full message flow**
+
+![Lab 01 flow](lab/src/labs/lab01-hello-queue/diagrams/lab01-flow.drawio.png)
+
+**Lab 02 — prefetch 0 vs prefetch 1**
+
+![Lab 02 prefetch](lab/src/labs/lab02-work-queue/diagrams/lab02-prefetch.drawio.png)
+
+**Lab 03 — lost, or waiting?**
+
+![Lab 03 lost vs wait](lab/src/labs/lab03-fanout/diagrams/lab03-lost-vs-wait.drawio.png)
+
+More diagrams live in each lab's `diagrams/` folder.
+
+---
+
+## Theory notes
+
+| Note | Topic |
+|------|-------|
+| [Core concepts](docs/rabbitMQ-core-concepts.md) | Broker, producer, consumer, exchange, queue, binding, routing |
+| [Creating queues](docs/rabbitmq-create-queue.md) | Exclusive, durable, auto-delete, `x-expires`, `x-message-ttl`, `x-max-length` |
+| [Exchanges](docs/rabbitmq-exchange.md) | Exchange options: durability, auto-delete, internal, arguments |
+| [Exchange types](docs/rabbitmq-exchange-types.md) | Default, direct, fanout, topic, headers |
+| [Consumer acknowledgements](docs/rabbitmq-consumer-acknowledgements.md) | Auto vs manual ack, nack, reject, redelivery, delivery tags |
+| [Dead lettering](docs/rabbitmq-dead-lettering.md) | DLX, DLQ, dead-letter routing keys, retry |
+| [Message expiry](docs/rabbitmq-message-expiry-time.md) | Queue TTL vs per-message TTL, delayed retries |
+| [Alternate exchange](docs/rabbitmq-alternate-exchange.md) | Catching unroutable messages |
+| [Reliable publishing](docs/rabbitmq-reliable-publishing.md) | Publisher confirms, returns, `mandatory`, persistence |
+| [Learning plan](docs/plan.md) | The original roadmap for this lab |
+
+---
+
+## Tech stack
+
+- **Node.js** + **NestJS** + **TypeScript**
+- **[amqplib](https://github.com/amqp-node/amqplib)** used directly inside a Nest provider, instead of `@nestjs/microservices`, so every exchange, binding, prefetch and ack stays visible
+- **RabbitMQ 3** with the management plugin, running in Docker
