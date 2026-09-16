@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Unroutable">
+    <mxGraphModel grid="1" gridSize="10" page="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="A key nobody is bound to: the message dies before any queue exists for it" style="text;html=1;fontSize=22;fontStyle=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1180" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pub" value="&lt;b&gt;Lab04Controller&lt;/b&gt;&lt;br&gt;publish(ex, &lt;b&gt;'order.refunded'&lt;/b&gt;, buf)&lt;br&gt;&lt;br&gt;returns &lt;b&gt;201 Created&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="20" y="95" width="250" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ex" value="&lt;b&gt;lab04.orders.direct&lt;/b&gt;&lt;br&gt;scans its binding table" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="330" y="95" width="230" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tbl" value="order.created&lt;br&gt;order.paid&lt;br&gt;order.cancelled&lt;br&gt;&lt;br&gt;&lt;b&gt;order.refunded → no row&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=13;align=left;spacingLeft=16;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="620" y="85" width="240" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="drop" value="&lt;b&gt;DISCARDED&lt;/b&gt;&lt;br&gt;matching queues: &lt;b&gt;0&lt;/b&gt;&lt;br&gt;&lt;br&gt;no queue → no storage → gone" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="920" y="95" width="260" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="silent" value="&lt;b&gt;Nothing failed.&lt;/b&gt;&amp;nbsp; The publisher got 201, the broker applied its rules correctly, no log line, no error, no metric. Watch it in the management UI: the exchange shows &lt;b&gt;message rate IN&lt;/b&gt; rising while &lt;b&gt;message rate OUT&lt;/b&gt; stays at zero. That gap is the only evidence you get." style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacingLeft=16;fontSize=13;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="20" y="240" width="1160" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="bad" value="Does NOT save you — every one of these acts at QUEUE level" style="swimlane;startSize=36;html=1;whiteSpace=wrap;rounded=1;arcSize=2;fontStyle=1;fontSize=14;fillColor=#f8cecc;strokeColor=#b85450;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="20" y="345" width="600" height="330" as="geometry" />
+        </mxCell>
+        <mxCell id="b1" value="✗&amp;nbsp; &lt;b&gt;durable: true&lt;/b&gt; on the queue — there is no queue in this story" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;align=left;spacingLeft=14;fillColor=#ffffff;strokeColor=#b3b3b3;" vertex="1" parent="bad">
+          <mxGeometry x="20" y="48" width="560" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="b2" value="✗&amp;nbsp; &lt;b&gt;persistent: true&lt;/b&gt; on the message — persistence happens when a message ENTERS a queue" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;align=left;spacingLeft=14;fillColor=#ffffff;strokeColor=#b3b3b3;" vertex="1" parent="bad">
+          <mxGeometry x="20" y="100" width="560" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="b3" value="✗&amp;nbsp; &lt;b&gt;DLX / dead-letter&lt;/b&gt; — only catches messages already INSIDE a queue (rejected, expired, overflow)" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;align=left;spacingLeft=14;fillColor=#ffffff;strokeColor=#b3b3b3;" vertex="1" parent="bad">
+          <mxGeometry x="20" y="152" width="560" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="b4" value="✗&amp;nbsp; &lt;b&gt;ack / nack / requeue&lt;/b&gt; — no consumer ever saw this message" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;align=left;spacingLeft=14;fillColor=#ffffff;strokeColor=#b3b3b3;" vertex="1" parent="bad">
+          <mxGeometry x="20" y="204" width="560" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="b5" value="⚠&amp;nbsp; &lt;b&gt;publisher confirms&lt;/b&gt; — the broker replies &lt;b&gt;ack&lt;/b&gt;. From its point of view this WAS a success." style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;align=left;spacingLeft=14;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="bad">
+          <mxGeometry x="20" y="256" width="560" height="46" as="geometry" />
+        </mxCell>
+
+        <mxCell id="good" value="What actually catches it — both act at EXCHANGE / PUBLISHER level  ·  Lab 10" style="swimlane;startSize=36;html=1;whiteSpace=wrap;rounded=1;arcSize=2;fontStyle=1;fontSize=14;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="650" y="345" width="530" height="330" as="geometry" />
+        </mxCell>
+        <mxCell id="g1" value="✓&amp;nbsp; &lt;b&gt;mandatory: true&lt;/b&gt; + channel.on('return', …)&lt;br&gt;&lt;br&gt;&quot;If you cannot route it, hand it back to me.&quot;&lt;br&gt;The publisher learns about the failure and can log, retry or store it." style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;align=left;spacingLeft=14;verticalAlign=top;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="good">
+          <mxGeometry x="20" y="48" width="490" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="g2" value="✓&amp;nbsp; &lt;b&gt;alternate-exchange&lt;/b&gt; on the exchange&lt;br&gt;&lt;br&gt;&quot;Anything unroutable goes to THIS exchange instead of the bin.&quot;&lt;br&gt;A catch-all queue collects the orphans — typo keys become visible." style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;align=left;spacingLeft=14;verticalAlign=top;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="good">
+          <mxGeometry x="20" y="176" width="490" height="126" as="geometry" />
+        </mxCell>
+
+        <mxCell id="foot" value="&lt;b&gt;The lesson of Lab 04:&lt;/b&gt;&amp;nbsp; a routing key is a contract between two systems that never talk to each other. A single typo — order.payed, Order.Paid — breaks it in complete silence." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="20" y="695" width="1160" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="pub" target="ex">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="lookup" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#9673a6;fontSize=12;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ex" target="tbl">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#b85450;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="tbl" target="drop">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

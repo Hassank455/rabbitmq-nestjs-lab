@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Fanout vs Direct">
+    <mxGraphModel grid="1" gridSize="10" page="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="One word of difference in the code. A completely different routing rule." style="text;html=1;fontSize=22;fontStyle=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1160" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pL" value="Lab 03 — assertExchange(ex, 'fanout')" style="swimlane;startSize=34;html=1;whiteSpace=wrap;rounded=1;arcSize=2;fontStyle=1;fontSize=14;fillColor=#ffe6cc;strokeColor=#d79b00;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="20" y="80" width="560" height="510" as="geometry" />
+        </mxCell>
+        <mxCell id="pubL" value="publish(ex, &lt;b&gt;''&lt;/b&gt;, buf)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="pL">
+          <mxGeometry x="150" y="55" width="260" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="exL" value="&lt;b&gt;fanout exchange&lt;/b&gt;&lt;br&gt;does not even LOOK at the key" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="pL">
+          <mxGeometry x="130" y="160" width="300" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="qL1" value="&lt;b&gt;lab03.email&lt;/b&gt;&lt;br&gt;bound with ''" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="pL">
+          <mxGeometry x="25" y="300" width="160" height="66" as="geometry" />
+        </mxCell>
+        <mxCell id="qL2" value="&lt;b&gt;lab03.sms&lt;/b&gt;&lt;br&gt;bound with ''" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="pL">
+          <mxGeometry x="200" y="300" width="160" height="66" as="geometry" />
+        </mxCell>
+        <mxCell id="qL3" value="&lt;b&gt;lab03.analytics&lt;/b&gt;&lt;br&gt;bound with ''" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="pL">
+          <mxGeometry x="375" y="300" width="160" height="66" as="geometry" />
+        </mxCell>
+        <mxCell id="capL" value="&lt;b&gt;3 bound queues → 3 copies. Always.&lt;/b&gt;&lt;br&gt;The only question fanout asks is &quot;are you on the list?&quot;.&lt;br&gt;Filtering, if you need any, happens inside the consumer — after the message already cost you a copy." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;fontColor=#666666;" vertex="1" parent="pL">
+          <mxGeometry x="25" y="390" width="510" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pR" value="Lab 04 — assertExchange(ex, 'direct')" style="swimlane;startSize=34;html=1;whiteSpace=wrap;rounded=1;arcSize=2;fontStyle=1;fontSize=14;fillColor=#e1d5e7;strokeColor=#9673a6;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="620" y="80" width="560" height="510" as="geometry" />
+        </mxCell>
+        <mxCell id="pubR" value="publish(ex, &lt;b&gt;'order.paid'&lt;/b&gt;, buf)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="pR">
+          <mxGeometry x="150" y="55" width="260" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="exR" value="&lt;b&gt;direct exchange&lt;/b&gt;&lt;br&gt;bindingKey === 'order.paid' ?" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="pR">
+          <mxGeometry x="130" y="160" width="300" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="qR1" value="&lt;b&gt;lab04.warehouse&lt;/b&gt;&lt;br&gt;bound: order.paid" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="pR">
+          <mxGeometry x="25" y="300" width="160" height="66" as="geometry" />
+        </mxCell>
+        <mxCell id="qR2" value="&lt;b&gt;lab04.email&lt;/b&gt;&lt;br&gt;bound: order.paid&lt;br&gt;+ order.cancelled" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="pR">
+          <mxGeometry x="200" y="300" width="160" height="66" as="geometry" />
+        </mxCell>
+        <mxCell id="qR3" value="&lt;b&gt;lab04.analytics&lt;/b&gt;&lt;br&gt;bound: order.created" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;dashed=1;fillColor=#f5f5f5;strokeColor=#999999;fontColor=#999999;" vertex="1" parent="pR">
+          <mxGeometry x="375" y="300" width="160" height="66" as="geometry" />
+        </mxCell>
+        <mxCell id="capR" value="&lt;b&gt;3 bound queues → 2 copies.&lt;/b&gt;&lt;br&gt;analytics is bound to the SAME exchange and still gets nothing: its key did not match.&lt;br&gt;Filtering happens in the broker, before a copy is ever made." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;fontColor=#666666;" vertex="1" parent="pR">
+          <mxGeometry x="25" y="390" width="510" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="flash" value="&lt;b&gt;Lab 01 flashback:&lt;/b&gt;&amp;nbsp; sendToQueue('hello', buf) is publish(&lt;b&gt;''&lt;/b&gt;, 'hello', buf). The empty-string exchange is the &lt;b&gt;default exchange&lt;/b&gt;, and it is a &lt;b&gt;direct&lt;/b&gt; exchange:&lt;br&gt;RabbitMQ automatically binds every queue you declare to it, using the &lt;b&gt;queue name as the binding key&lt;/b&gt;. Lab 01 was already Lab 04 — the binding was just made for you." style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacingLeft=16;fontSize=13;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="20" y="615" width="1160" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="eL0" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="pubL" target="exL">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eL1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;strokeWidth=3;exitX=0.2;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="exL" target="qL1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eL2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;strokeWidth=3;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="exL" target="qL2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eL3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;strokeWidth=3;exitX=0.8;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="exL" target="qL3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="eR0" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="pubR" target="exR">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eR1" value="✓" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;strokeWidth=3;fontSize=16;fontColor=#82b366;labelBackgroundColor=#ffffff;exitX=0.2;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="exR" target="qR1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eR2" value="✓" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;strokeWidth=3;fontSize=16;fontColor=#82b366;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="exR" target="qR2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eR3" value="✗" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b3b3b3;strokeWidth=1;dashed=1;fontSize=16;fontColor=#999999;labelBackgroundColor=#ffffff;exitX=0.8;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="exR" target="qR3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
