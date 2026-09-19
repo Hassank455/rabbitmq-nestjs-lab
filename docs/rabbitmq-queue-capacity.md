@@ -1,4 +1,4 @@
-# 013 - RabbitMQ - Queue Capacity
+# RabbitMQ - Queue Capacity
 
 ## Overview
 
