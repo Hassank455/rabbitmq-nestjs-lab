@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Lab06 Durability">
+    <mxGraphModel grid="1" gridSize="10" page="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="Lab 06 — Surviving a broker restart needs THREE switches, not one" style="text;html=1;fontSize=22;fontStyle=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1280" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s1" value="&lt;b&gt;1. durable EXCHANGE&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font face=&quot;Courier New&quot;&gt;assertExchange(ex, 'direct',&lt;br&gt;&amp;nbsp;&amp;nbsp;{ durable: true })&lt;/font&gt;&lt;br&gt;&lt;br&gt;The exchange DEFINITION survives." style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;align=left;spacingLeft=14;verticalAlign=top;spacingTop=8;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="20" y="80" width="410" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="s2" value="&lt;b&gt;2. durable QUEUE&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font face=&quot;Courier New&quot;&gt;assertQueue(q,&lt;br&gt;&amp;nbsp;&amp;nbsp;{ durable: true })&lt;/font&gt;&lt;br&gt;&lt;br&gt;The queue DEFINITION and its bindings survive.&lt;br&gt;Its messages do NOT, by themselves." style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;align=left;spacingLeft=14;verticalAlign=top;spacingTop=8;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="455" y="80" width="410" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="s3" value="&lt;b&gt;3. persistent MESSAGE&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font face=&quot;Courier New&quot;&gt;publish(ex, key, buf,&lt;br&gt;&amp;nbsp;&amp;nbsp;{ persistent: true })&lt;/font&gt;&lt;br&gt;&lt;br&gt;deliveryMode 2 → written to disk,&lt;br&gt;but only inside a DURABLE queue." style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;align=left;spacingLeft=14;verticalAlign=top;spacingTop=8;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="890" y="80" width="410" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="and" value="&lt;b&gt;All three together, or nothing.&lt;/b&gt;&amp;nbsp; Any switch left off makes the other two pointless — measured on a real broker below." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="20" y="240" width="1280" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="h0" value="run" style="rounded=0;whiteSpace=wrap;html=1;fontSize=13;fontStyle=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="20" y="295" width="90" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="h1" value="LAB06_DURABLE" style="rounded=0;whiteSpace=wrap;html=1;fontSize=13;fontStyle=1;fontFamily=Courier New;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="110" y="295" width="190" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="h2" value="LAB06_PERSISTENT" style="rounded=0;whiteSpace=wrap;html=1;fontSize=13;fontStyle=1;fontFamily=Courier New;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="300" y="295" width="210" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="h3" value="before docker restart" style="rounded=0;whiteSpace=wrap;html=1;fontSize=13;fontStyle=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="510" y="295" width="330" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="h4" value="after docker restart" style="rounded=0;whiteSpace=wrap;html=1;fontSize=13;fontStyle=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="840" y="295" width="290" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="h5" value="verdict" style="rounded=0;whiteSpace=wrap;html=1;fontSize=13;fontStyle=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="1130" y="295" width="170" height="54" as="geometry" />
+        </mxCell>
+
+        <mxCell id="r1a" value="1" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1;fillColor=#f5f5f5;strokeColor=#b3b3b3;" vertex="1" parent="1">
+          <mxGeometry x="20" y="349" width="90" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r1b" value="off" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;fontFamily=Courier New;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="110" y="349" width="190" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r1c" value="on" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;fontFamily=Courier New;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="300" y="349" width="210" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r1d" value="lab06.invoices.transient&lt;br&gt;3 messages" style="rounded=0;whiteSpace=wrap;html=1;fontSize=13;fillColor=#ffffff;strokeColor=#d0d0d0;" vertex="1" parent="1">
+          <mxGeometry x="510" y="349" width="330" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r1e" value="&lt;b&gt;the queue is gone&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=13;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="840" y="349" width="290" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r1f" value="✗ lost" style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;fontStyle=1;fontColor=#b85450;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="1130" y="349" width="170" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="r2a" value="2" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1;fillColor=#f5f5f5;strokeColor=#b3b3b3;" vertex="1" parent="1">
+          <mxGeometry x="20" y="419" width="90" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r2b" value="on" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;fontFamily=Courier New;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="110" y="419" width="190" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r2c" value="off" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;fontFamily=Courier New;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="300" y="419" width="210" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r2d" value="lab06.invoices.durable&lt;br&gt;3 messages" style="rounded=0;whiteSpace=wrap;html=1;fontSize=13;fillColor=#ffffff;strokeColor=#d0d0d0;" vertex="1" parent="1">
+          <mxGeometry x="510" y="419" width="330" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r2e" value="queue is there&lt;br&gt;&lt;b&gt;0 messages&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=13;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="840" y="419" width="290" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r2f" value="✗ lost" style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;fontStyle=1;fontColor=#b85450;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="1130" y="419" width="170" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="r3a" value="3" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1;fillColor=#f5f5f5;strokeColor=#b3b3b3;" vertex="1" parent="1">
+          <mxGeometry x="20" y="489" width="90" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r3b" value="on" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;fontFamily=Courier New;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="110" y="489" width="190" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r3c" value="on" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;fontFamily=Courier New;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="300" y="489" width="210" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r3d" value="lab06.invoices.durable&lt;br&gt;3 messages" style="rounded=0;whiteSpace=wrap;html=1;fontSize=13;fillColor=#ffffff;strokeColor=#d0d0d0;" vertex="1" parent="1">
+          <mxGeometry x="510" y="489" width="330" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r3e" value="durable queue&lt;br&gt;&lt;b&gt;3 messages&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=13;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="840" y="489" width="290" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r3f" value="✓ survived" style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;fontStyle=1;fontColor=#2d7a2d;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1130" y="489" width="170" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="note" value="&lt;b&gt;Why two queue names?&lt;/b&gt;&amp;nbsp; A queue's properties are fixed at creation. Re-declaring lab06.invoices with a different a different &lt;b&gt;durable&lt;/b&gt; valuelt;ba different &lt;b&gt;durable&lt;/b&gt; valuegt;durablea different &lt;b&gt;durable&lt;/b&gt; valuelt;/ba different &lt;b&gt;durable&lt;/b&gt; value is refused with &lt;b&gt;PRECONDITION_FAILED&lt;/b&gt; and the channel is closed — the same rule that stops you changing an exchange type (Lab 04). So each mode gets its own name.&lt;br&gt;&lt;b&gt;Row 1 is the trap:&lt;/b&gt;&amp;nbsp; the messages WERE persistent. Persistence only happens on the way into a durable queue, so a transient queue throws that work away." style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacingLeft=16;fontSize=13;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="20" y="585" width="1280" height="90" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
