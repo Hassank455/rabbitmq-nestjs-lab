@@ -45,7 +45,7 @@ curl -X POST http://localhost:3000/lab03/orders \
 ## Gotchas
 - `durable: false` queues survive app restarts; only a **broker** restart removes them.
 - Binding to a non-existent exchange → `NOT_FOUND` → channel closed.
-- Our `RabbitMQService` has **no reconnect** logic yet: a broker restart leaves the app disconnected.
+- `RabbitMQService` reconnects since **Lab 06**, but these consumers still call `createChannel()` directly, so after a broker restart they publish fine and **never consume again** (`0 consumers` on the queue).
 
 ## Mental Model
 ```text

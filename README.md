@@ -18,10 +18,10 @@ Every lab is a small NestJS module with a publisher, one or more consumers, and 
 | 01 | [Hello Queue](lab/src/labs/lab01-hello-queue/README.md) | Default exchange · connection vs channel · manual ack | ✅ Done |
 | 02 | [Work Queue](lab/src/labs/lab02-work-queue/README.md) | Competing consumers · prefetch · redelivery | ✅ Done |
 | 03 | [Fanout Exchange](lab/src/labs/lab03-fanout/README.md) | Bindings · copy per service · exclusive queues | ✅ Done |
-| 04 | Direct Exchange | Routing keys · multiple bindings | 🔜 Next |
-| 05 | Topic Exchange | Wildcards `*` and `#` | ⬜ Planned |
-| 06 | Durability & Reconnect | Durable queues · persistent messages · connection recovery | ⬜ Planned |
-| 07 | Ack / Nack / Reject | Requeue · poison messages · infinite loops | ⬜ Planned |
+| 04 | [Direct Exchange](lab/src/labs/lab04-direct/README.md) | Routing keys · multiple bindings · unroutable messages | ✅ Done |
+| 05 | [Topic Exchange](lab/src/labs/lab05-topic/README.md) | Wildcards `*` and `#` · pattern subscriptions | ✅ Done |
+| 06 | [Durability & Reconnect](lab/src/labs/lab06-durability/README.md) | Durable queues · persistent messages · connection recovery | ✅ Done |
+| 07 | Ack / Nack / Reject | Requeue · poison messages · infinite loops | 🔜 Next |
 | 08 | Dead Letter Exchange | DLX · DLQ · the `x-death` header | ⬜ Planned |
 | 09 | Retry with TTL | Delayed retries · retry tiers · head-of-queue TTL trap | ⬜ Planned |
 | 10 | Unroutable Messages | `mandatory` · returns · alternate exchange | ⬜ Planned |
@@ -66,7 +66,10 @@ curl -X POST http://localhost:3000/lab01/publish \
 |-----|--------|------|------|
 | 01 | `POST` | `/lab01/publish` | `{ "userId": 10, "message": "..." }` |
 | 02 | `POST` | `/lab02/publish` | `{ "count": 20, "durationMs": 500 }` |
-| 03 | `POST` | `/lab03/orders`  | `{ "count": 6 }` |
+| 03 | `POST` | `/lab03/orders` | `{ "count": 6 }` |
+| 04 | `POST` | `/lab04/publish` | `{ "key": "order.paid", "count": 1 }` |
+| 05 | `POST` | `/lab05/publish` | `{ "key": "order.paid.eu", "count": 1 }` |
+| 06 | `POST` | `/lab06/invoices` | `{ "count": 3 }` |
 
 ## Environment variables
 
@@ -77,11 +80,19 @@ The same app is started several times with different settings to simulate separa
 | `RABBITMQ_URL` | `amqp://guest:guest@localhost:5672` | all | Broker connection string |
 | `PORT` | `3000` | all | HTTP port (change it to run several instances) |
 | `CONSUMERS` | off | all | `on` starts the consumers |
-| `WORKER_NAME` | `worker` | 02 · 03 | Label shown in logs |
+| `WORKER_NAME` | `worker` | 02 · 03 · 04 · 05 | Label shown in logs |
 | `WORKER_DELAY` | `1000` | 02 | Simulated work time in ms |
 | `PREFETCH` | `0` | 02 | Max unacked messages per consumer (`0` = unlimited) |
 | `SERVICES` | all | 03 | `email,sms,analytics` subset, or `none` |
 | `LIVE` | off | 03 | `on` starts a live dashboard on an exclusive queue |
+| `LAB04_SERVICES` | all | 04 | `warehouse,email,audit,analytics` subset, or `none` |
+| `LAB05_SERVICES` | all | 05 | `audit,orders,compliance,payments,alerts` subset, or `none` |
+| `LAB06_DURABLE` | `on` | 06 | Durable exchange + queue (also picks the queue name) |
+| `LAB06_PERSISTENT` | `on` | 06 | `deliveryMode 2` on every message |
+| `LAB06_PAUSED` | off | 06 | `on` = declare and bind, but never consume |
+| `LAB06_DELAY` | `2000` | 06 | Simulated work time in ms |
+
+Each lab owns its own service filter (`SERVICES`, `LAB04_SERVICES`, …) so that running everything at once does not make one lab's filter silence another's.
 
 Example: two competing workers with different speeds.
 
@@ -97,18 +108,22 @@ CONSUMERS=on WORKER_NAME=SLOW WORKER_DELAY=3000 PREFETCH=1 PORT=3001 npm run sta
 ```text
 .
 ├── docs/                         Theory notes, one file per topic
-│   └── images/
+│   ├── images/
+│   └── linkedin/                 Post text + images for the learning journey
 └── lab/                          NestJS app
     └── src/
         ├── main.ts
         ├── app.module.ts
-        ├── rabbitmq/             Shared infrastructure: one connection, channels on demand
+        ├── rabbitmq/             Shared infrastructure: recovering connection, channels, consumer registry
         │   ├── rabbitmq.module.ts
         │   └── rabbitmq.service.ts
         └── labs/
             ├── lab01-hello-queue/
             ├── lab02-work-queue/
-            └── lab03-fanout/
+            ├── lab03-fanout/
+            ├── lab04-direct/
+            ├── lab05-topic/
+            └── lab06-durability/
 ```
 
 Every lab folder follows the same layout:
@@ -130,21 +145,25 @@ Every lab folder follows the same layout:
 - **One connection per process, one channel per consumer.** Connections are expensive TCP sockets; channels are cheap.
 - **In Node.js, `prefetch` is your concurrency limit.** amqplib never awaits the consume callback.
 - **A queue shares. An exchange copies.** Many consumers on one queue split the work; every bound queue gets its own copy.
-- **An exchange stores nothing.** No queue bound at publish time means the message is gone.
+- **An exchange stores nothing.** No queue bound at publish time means the message is gone, and the publisher still gets a 201.
+- **The exchange type is the routing question.** fanout: "are you bound?" · direct: "is your key exactly this?" · topic: "does your key match this pattern, word by word?"
+- **Durability is three switches**, not one: durable exchange + durable queue + persistent message.
+- **amqplib restores the connection. You restore the work.** Channels, consumers and topology have to be re-declared after every reconnect.
+- **At-least-once is the deal.** A lost ack means the same work runs twice, so consumers must become idempotent.
 
 ## Selected diagrams
-
-**Lab 01 — the full message flow**
-
-![Lab 01 flow](lab/src/labs/lab01-hello-queue/diagrams/lab01-flow.drawio.png)
 
 **Lab 02 — prefetch 0 vs prefetch 1**
 
 ![Lab 02 prefetch](lab/src/labs/lab02-work-queue/diagrams/lab02-prefetch.drawio.png)
 
-**Lab 03 — lost, or waiting?**
+**Lab 05 — who receives what**
 
-![Lab 03 lost vs wait](lab/src/labs/lab03-fanout/diagrams/lab03-lost-vs-wait.drawio.png)
+![Lab 05 matching](lab/src/labs/lab05-topic/diagrams/lab05-matching.drawio.png)
+
+**Lab 06 — what recovers after a broker restart**
+
+![Lab 06 what recovers](lab/src/labs/lab06-durability/diagrams/lab06-what-recovers.drawio.png)
 
 More diagrams live in each lab's `diagrams/` folder.
 
