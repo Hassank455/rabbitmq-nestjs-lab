@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Lab07 Attempt Counter">
+    <mxGraphModel grid="1" gridSize="10" page="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+<mxCell id="title" value="Where the attempt counter must live" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=22;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="20" y="20" width="1240" height="40" as="geometry" /></mxCell>
+<mxCell id="h1" value="✗ in process memory — new Map&amp;lt;id, attempts&amp;gt;()" style="rounded=1;whiteSpace=wrap;html=1;fontSize=15;fontStyle=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1"><mxGeometry x="20" y="80" width="620" height="40" as="geometry" /></mxCell>
+<mxCell id="h2" value="✓ in the message or in the broker" style="rounded=1;whiteSpace=wrap;html=1;fontSize=15;fontStyle=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="660" y="80" width="600" height="40" as="geometry" /></mxCell>
+<mxCell id="a1" value="&lt;b&gt;Restart resets it&lt;/b&gt; (measured, MAX = 3)&lt;br&gt;&lt;font face=&quot;Courier New&quot; style=&quot;font-size:12px&quot;&gt;run 1: attempt=1 → 2 → 3 → (killed)&lt;br&gt;run 2: attempt=&lt;b&gt;1&lt;/b&gt; redelivered=&lt;b&gt;true&lt;/b&gt; → 2 → 3 → 🗑️&lt;/font&gt;&lt;br&gt;6 deliveries instead of 3. A message that crashes the process never reaches MAX." style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;align=left;verticalAlign=top;spacingLeft=14;spacingTop=8;fillColor=#ffffff;strokeColor=#d0d0d0;" vertex="1" parent="1"><mxGeometry x="20" y="135" width="620" height="115" as="geometry" /></mxCell>
+<mxCell id="a2" value="&lt;b&gt;Every replica has its own Map&lt;/b&gt;&lt;br&gt;worker A: attempt=1 · worker B: attempt=1 · worker C: attempt=1 …&lt;br&gt;Real limit = MAX × replicas." style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;align=left;verticalAlign=top;spacingLeft=14;spacingTop=8;fillColor=#ffffff;strokeColor=#d0d0d0;" vertex="1" parent="1"><mxGeometry x="20" y="262" width="620" height="90" as="geometry" /></mxCell>
+<mxCell id="a3" value="&lt;b&gt;It leaks&lt;/b&gt;&lt;br&gt;Worker B finishes the message → worker A's entry is never deleted." style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;align=left;verticalAlign=top;spacingLeft=14;spacingTop=8;fillColor=#ffffff;strokeColor=#d0d0d0;" vertex="1" parent="1"><mxGeometry x="20" y="364" width="620" height="72" as="geometry" /></mxCell>
+<mxCell id="b1" value="&lt;b&gt;Dead-letter exchange → Lab 08&lt;/b&gt;&lt;br&gt;nack(requeue: false) sends the message to the DLX.&lt;br&gt;The broker adds an &lt;font face=&quot;Courier New&quot;&gt;x-death&lt;/font&gt; header with a &lt;b&gt;count&lt;/b&gt; that travels with the message, across restarts and workers." style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;align=left;verticalAlign=top;spacingLeft=14;spacingTop=8;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="660" y="135" width="600" height="115" as="geometry" /></mxCell>
+<mxCell id="b2" value="&lt;b&gt;Quorum queue&lt;/b&gt;&lt;br&gt;The broker counts deliveries itself (&lt;font face=&quot;Courier New&quot;&gt;x-delivery-count&lt;/font&gt;) and dead-letters or drops the message at &lt;font face=&quot;Courier New&quot;&gt;delivery-limit&lt;/font&gt;." style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;align=left;verticalAlign=top;spacingLeft=14;spacingTop=8;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="660" y="262" width="600" height="90" as="geometry" /></mxCell>
+<mxCell id="b3" value="&lt;b&gt;redelivered&lt;/b&gt; is not a counter&lt;br&gt;It is a boolean: &quot;this may have been delivered before&quot;." style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;align=left;verticalAlign=top;spacingLeft=14;spacingTop=8;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1"><mxGeometry x="660" y="364" width="600" height="72" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

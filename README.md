@@ -21,8 +21,8 @@ Every lab is a small NestJS module with a publisher, one or more consumers, and 
 | 04 | [Direct Exchange](lab/src/labs/lab04-direct/README.md) | Routing keys · multiple bindings · unroutable messages | ✅ Done |
 | 05 | [Topic Exchange](lab/src/labs/lab05-topic/README.md) | Wildcards `*` and `#` · pattern subscriptions | ✅ Done |
 | 06 | [Durability & Reconnect](lab/src/labs/lab06-durability/README.md) | Durable queues · persistent messages · connection recovery | ✅ Done |
-| 07 | Ack / Nack / Reject | Requeue · poison messages · infinite loops | 🔜 Next |
-| 08 | Dead Letter Exchange | DLX · DLQ · the `x-death` header | ⬜ Planned |
+| 07 | [Ack / Nack / Reject](lab/src/labs/lab07-ack-nack/README.md) | Requeue · poison messages · infinite loops | ✅ Done |
+| 08 | Dead Letter Exchange | DLX · DLQ · the `x-death` header | 🔜 Next |
 | 09 | Retry with TTL | Delayed retries · retry tiers · head-of-queue TTL trap | ⬜ Planned |
 | 10 | Unroutable Messages | `mandatory` · returns · alternate exchange | ⬜ Planned |
 | 11 | Publisher Confirms | Proving the broker really received a message | ⬜ Planned |
@@ -70,6 +70,7 @@ curl -X POST http://localhost:3000/lab01/publish \
 | 04 | `POST` | `/lab04/publish` | `{ "key": "order.paid", "count": 1 }` |
 | 05 | `POST` | `/lab05/publish` | `{ "key": "order.paid.eu", "count": 1 }` |
 | 06 | `POST` | `/lab06/invoices` | `{ "count": 3 }` |
+| 07 | `POST` | `/lab07/pay` | `{ "kind": "poison", "count": 1 }` (`ok` · `transient` · `poison`) |
 
 ## Environment variables
 
@@ -91,6 +92,9 @@ The same app is started several times with different settings to simulate separa
 | `LAB06_PERSISTENT` | `on` | 06 | `deliveryMode 2` on every message |
 | `LAB06_PAUSED` | off | 06 | `on` = declare and bind, but never consume |
 | `LAB06_DELAY` | `2000` | 06 | Simulated work time in ms |
+| `LAB07_STRATEGY` | `requeue` | 07 | On failure: `requeue` · `drop` · `smart` · `hang` |
+| `LAB07_MAX_ATTEMPTS` | `3` | 07 | `smart` only: deliveries before giving up |
+| `LAB07_DELAY` | `500` | 07 | Simulated work time in ms |
 
 Each lab owns its own service filter (`SERVICES`, `LAB04_SERVICES`, …) so that running everything at once does not make one lab's filter silence another's.
 
@@ -123,7 +127,8 @@ CONSUMERS=on WORKER_NAME=SLOW WORKER_DELAY=3000 PREFETCH=1 PORT=3001 npm run sta
             ├── lab03-fanout/
             ├── lab04-direct/
             ├── lab05-topic/
-            └── lab06-durability/
+            ├── lab06-durability/
+            └── lab07-ack-nack/
 ```
 
 Every lab folder follows the same layout:
@@ -150,6 +155,8 @@ Every lab folder follows the same layout:
 - **Durability is three switches**, not one: durable exchange + durable queue + persistent message.
 - **amqplib restores the connection. You restore the work.** Channels, consumers and topology have to be re-declared after every reconnect.
 - **At-least-once is the deal.** A lost ack means the same work runs twice, so consumers must become idempotent.
+- **A requeued message goes back to the front.** One message that always fails, requeued, blocks every message behind it: no error, no crash.
+- **`redelivered` is a boolean, not a counter.** A retry limit has to live in the message or the broker, never in process memory.
 
 ## Selected diagrams
 
@@ -164,6 +171,10 @@ Every lab folder follows the same layout:
 **Lab 06 — what recovers after a broker restart**
 
 ![Lab 06 what recovers](lab/src/labs/lab06-durability/diagrams/lab06-what-recovers.drawio.png)
+
+**Lab 07 — one poison message blocks the queue**
+
+![Lab 07 poison loop](lab/src/labs/lab07-ack-nack/diagrams/lab07-poison-loop.drawio.png)
 
 More diagrams live in each lab's `diagrams/` folder.
 

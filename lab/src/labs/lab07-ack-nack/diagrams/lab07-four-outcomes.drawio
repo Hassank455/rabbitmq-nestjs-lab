@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Lab07 Four Outcomes">
+    <mxGraphModel grid="1" gridSize="10" page="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+<mxCell id="title" value="A delivered message: four things the consumer can do" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=22;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="20" y="20" width="1240" height="40" as="geometry" /></mxCell>
+<mxCell id="msg" value="&lt;b&gt;message&lt;/b&gt;&lt;br&gt;delivered&lt;br&gt;&lt;font face=&quot;Courier New&quot;&gt;deliveryTag 7&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=15;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="20" y="250" width="200" height="110" as="geometry" /></mxCell>
+<mxCell id="cack" value="&lt;font face=&quot;Courier New&quot;&gt;channel.ack(msg)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;align=left;spacingLeft=14;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="290" y="80" width="330" height="90" as="geometry" /></mxCell>
+<mxCell id="rack" value="&lt;b&gt;deleted&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=15;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="680" y="80" width="240" height="90" as="geometry" /></mxCell>
+<mxCell id="wack" value="The work is done. The broker forgets the message." style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;align=left;spacingLeft=10;spacingRight=6;fillColor=#ffffff;strokeColor=#d0d0d0;" vertex="1" parent="1"><mxGeometry x="940" y="80" width="320" height="90" as="geometry" /></mxCell>
+<mxCell id="emack" style="edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0;entryY=0.5;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#666666;html=1;" edge="1" parent="1" source="msg" target="cack"><mxGeometry relative="1" as="geometry" /></mxCell>
+<mxCell id="ecack" style="endArrow=block;endFill=1;strokeWidth=2;strokeColor=#666666;html=1;" edge="1" parent="1" source="cack" target="rack"><mxGeometry relative="1" as="geometry" /></mxCell>
+<mxCell id="crq" value="&lt;font face=&quot;Courier New&quot;&gt;channel.nack(msg, false, &lt;b&gt;true&lt;/b&gt;)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;align=left;spacingLeft=14;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1"><mxGeometry x="290" y="190" width="330" height="90" as="geometry" /></mxCell>
+<mxCell id="rrq" value="&lt;b&gt;back to the FRONT&lt;/b&gt; of the queue" style="rounded=1;whiteSpace=wrap;html=1;fontSize=15;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1"><mxGeometry x="680" y="190" width="240" height="90" as="geometry" /></mxCell>
+<mxCell id="wrq" value="Transient failure → fine (Exp B: ✅ on attempt 3).&lt;br&gt;Poison message → redelivered forever, blocks the queue (Exp C)." style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;align=left;spacingLeft=10;spacingRight=6;fillColor=#ffffff;strokeColor=#d0d0d0;" vertex="1" parent="1"><mxGeometry x="940" y="190" width="320" height="90" as="geometry" /></mxCell>
+<mxCell id="emrq" style="edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0;entryY=0.5;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#666666;html=1;" edge="1" parent="1" source="msg" target="crq"><mxGeometry relative="1" as="geometry" /></mxCell>
+<mxCell id="ecrq" style="endArrow=block;endFill=1;strokeWidth=2;strokeColor=#666666;html=1;" edge="1" parent="1" source="crq" target="rrq"><mxGeometry relative="1" as="geometry" /></mxCell>
+<mxCell id="cdr" value="&lt;font face=&quot;Courier New&quot;&gt;channel.nack(msg, false, &lt;b&gt;false&lt;/b&gt;)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;align=left;spacingLeft=14;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1"><mxGeometry x="290" y="300" width="330" height="90" as="geometry" /></mxCell>
+<mxCell id="rdr" value="&lt;b&gt;deleted&lt;/b&gt; · no DLX yet" style="rounded=1;whiteSpace=wrap;html=1;fontSize=15;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1"><mxGeometry x="680" y="300" width="240" height="90" as="geometry" /></mxCell>
+<mxCell id="wdr" value="Gone. No log from the broker, no copy anywhere (Exp D).&lt;br&gt;With a dead-letter exchange it would be kept → Lab 08." style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;align=left;spacingLeft=10;spacingRight=6;fillColor=#ffffff;strokeColor=#d0d0d0;" vertex="1" parent="1"><mxGeometry x="940" y="300" width="320" height="90" as="geometry" /></mxCell>
+<mxCell id="emdr" style="edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0;entryY=0.5;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#666666;html=1;" edge="1" parent="1" source="msg" target="cdr"><mxGeometry relative="1" as="geometry" /></mxCell>
+<mxCell id="ecdr" style="endArrow=block;endFill=1;strokeWidth=2;strokeColor=#666666;html=1;" edge="1" parent="1" source="cdr" target="rdr"><mxGeometry relative="1" as="geometry" /></mxCell>
+<mxCell id="chg" value="&lt;font face=&quot;Courier New&quot;&gt;// no ack, no nack&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;align=left;spacingLeft=14;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1"><mxGeometry x="290" y="410" width="330" height="90" as="geometry" /></mxCell>
+<mxCell id="rhg" value="&lt;b&gt;unacked&lt;/b&gt; forever" style="rounded=1;whiteSpace=wrap;html=1;fontSize=15;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1"><mxGeometry x="680" y="410" width="240" height="90" as="geometry" /></mxCell>
+<mxCell id="whg" value="prefetch(1) is full → nothing else arrives (Exp F).&lt;br&gt;After consumer_timeout (30 min) the channel is closed." style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;align=left;spacingLeft=10;spacingRight=6;fillColor=#ffffff;strokeColor=#d0d0d0;" vertex="1" parent="1"><mxGeometry x="940" y="410" width="320" height="90" as="geometry" /></mxCell>
+<mxCell id="emhg" style="edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0;entryY=0.5;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#666666;html=1;" edge="1" parent="1" source="msg" target="chg"><mxGeometry relative="1" as="geometry" /></mxCell>
+<mxCell id="echg" style="endArrow=block;endFill=1;strokeWidth=2;strokeColor=#666666;html=1;" edge="1" parent="1" source="chg" target="rhg"><mxGeometry relative="1" as="geometry" /></mxCell>
+<mxCell id="note" value="&lt;b&gt;reject(msg, requeue)&lt;/b&gt; is exactly &lt;b&gt;nack(msg, false, requeue)&lt;/b&gt;. nack only adds the allUpTo flag — keep it false." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=14;rounded=1;spacingLeft=16;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1"><mxGeometry x="20" y="530" width="1240" height="50" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
