@@ -6,6 +6,7 @@ import { Lab04Module } from './labs/lab04-direct/lab04.module';
 import { Lab05Module } from './labs/lab05-topic/lab05.module';
 import { Lab06Module } from './labs/lab06-durability/lab06.module';
 import { Lab07Module } from './labs/lab07-ack-nack/lab07.module';
+import { Lab08Module } from './labs/lab08-dead-letter/lab08.module';
 import { RabbitMQModule } from './rabbitmq/rabbitmq.module';
 
 @Module({
@@ -18,6 +19,7 @@ import { RabbitMQModule } from './rabbitmq/rabbitmq.module';
     Lab05Module,
     Lab06Module,
     Lab07Module,
+    Lab08Module,
   ],
 })
 export class AppModule {}

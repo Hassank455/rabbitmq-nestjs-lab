@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Lab08 DLX Flow">
+    <mxGraphModel grid="1" gridSize="10" page="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+<mxCell id="title" value="Where a dead message goes" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=22;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="20" y="20" width="1240" height="40" as="geometry" /></mxCell>
+<mxCell id="pub" value="&lt;b&gt;POST&lt;/b&gt;&lt;br&gt;/lab08/orders" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fillColor=#ffffff;strokeColor=#d0d0d0;" vertex="1" parent="1"><mxGeometry x="20" y="110" width="170" height="80" as="geometry" /></mxCell>
+<mxCell id="ex" value="&lt;b&gt;lab08.orders&lt;/b&gt;&lt;br&gt;direct" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;size=0.12;fontSize=14;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1"><mxGeometry x="240" y="110" width="200" height="80" as="geometry" /></mxCell>
+<mxCell id="wq" value="&lt;b&gt;lab08.orders.work&lt;/b&gt;&lt;br&gt;&lt;font face=&quot;Courier New&quot; style=&quot;font-size:12px&quot;&gt;x-dead-letter-exchange:&lt;br&gt;lab08.orders.dlx&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="520" y="95" width="300" height="110" as="geometry" /></mxCell>
+<mxCell id="cons" value="&lt;b&gt;consumer&lt;/b&gt;&lt;br&gt;ok → ack · poison → &lt;font face=&quot;Courier New&quot; style=&quot;font-size:12px&quot;&gt;nack(msg, false, false)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1"><mxGeometry x="900" y="110" width="360" height="80" as="geometry" /></mxCell>
+<mxCell id="e1" value="" style="endArrow=block;endFill=1;strokeWidth=2;strokeColor=#666666;html=1;fontSize=12;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="pub" target="ex"><mxGeometry relative="1" as="geometry" /></mxCell>
+<mxCell id="e2" value="order.placed" style="endArrow=block;endFill=1;strokeWidth=2;strokeColor=#666666;html=1;fontSize=12;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="ex" target="wq"><mxGeometry relative="1" as="geometry" /></mxCell>
+<mxCell id="e3" value="" style="endArrow=block;endFill=1;strokeWidth=2;strokeColor=#666666;html=1;fontSize=12;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="wq" target="cons"><mxGeometry relative="1" as="geometry" /></mxCell>
+<mxCell id="dlx" value="&lt;b&gt;lab08.orders.dlx&lt;/b&gt;&lt;br&gt;fanout · you chose the type" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;size=0.12;fontSize=14;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1"><mxGeometry x="540" y="300" width="260" height="80" as="geometry" /></mxCell>
+<mxCell id="dlq" value="&lt;b&gt;lab08.orders.dlq&lt;/b&gt;&lt;br&gt;normal durable queue" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1"><mxGeometry x="540" y="450" width="260" height="80" as="geometry" /></mxCell>
+
+<mxCell id="e5" value="on nack(requeue: false) the BROKER&lt;br&gt;publishes it here, keeping key order.placed" style="endArrow=block;endFill=1;strokeWidth=2;strokeColor=#b85450;html=1;fontSize=12;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="wq" target="dlx"><mxGeometry relative="1" as="geometry" /></mxCell>
+<mxCell id="e6" value="" style="endArrow=block;endFill=1;strokeWidth=2;strokeColor=#666666;html=1;fontSize=12;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="dlx" target="dlq"><mxGeometry relative="1" as="geometry" /></mxCell>
+<mxCell id="peek" value="&lt;b&gt;GET /lab08/dlq&lt;/b&gt; — peek&lt;br&gt;own channel · get ×N · nack(requeue: true)&lt;br&gt;removes nothing" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;align=left;spacingLeft=14;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1"><mxGeometry x="20" y="440" width="420" height="100" as="geometry" /></mxCell>
+<mxCell id="replay" value="&lt;b&gt;POST /lab08/dlq/replay&lt;/b&gt;&lt;br&gt;snapshot messageCount · publish copy&lt;br&gt;to x-death exchange + key · &lt;b&gt;then&lt;/b&gt; ack" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;align=left;spacingLeft=14;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="900" y="440" width="360" height="100" as="geometry" /></mxCell>
+<mxCell id="e7" value="" style="endArrow=block;endFill=1;strokeWidth=2;strokeColor=#d6b656;html=1;fontSize=12;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="peek" target="dlq"><mxGeometry relative="1" as="geometry" /></mxCell>
+<mxCell id="e8" value="" style="endArrow=block;endFill=1;strokeWidth=2;strokeColor=#82b366;html=1;fontSize=12;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="dlq" target="replay"><mxGeometry relative="1" as="geometry" /></mxCell>
+<mxCell id="e9" value="back to work" style="exitX=1;exitY=0.5;entryX=0.5;entryY=0;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#82b366;dashed=1;html=1;fontSize=12;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="replay" target="ex"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1290" y="490" /><mxPoint x="1290" y="75" /><mxPoint x="340" y="75" /></Array></mxGeometry></mxCell>
+<mxCell id="why" value="&lt;b&gt;A message dies when…&lt;/b&gt;&lt;br&gt;rejected — nack / reject, requeue: false&lt;br&gt;expired — TTL ran out, nobody read it&lt;br&gt;maxlen — queue over x-max-length&lt;br&gt;delivery_limit — quorum delivery-limit&lt;br&gt;&lt;i&gt;requeue: true never dead-letters&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;align=left;verticalAlign=top;spacingLeft=14;spacingTop=8;fillColor=#ffffff;strokeColor=#d0d0d0;" vertex="1" parent="1"><mxGeometry x="20" y="250" width="420" height="150" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
